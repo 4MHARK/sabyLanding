@@ -1,0 +1,648 @@
+import React, { useState } from "react";
+import { Search, ArrowRight, Twitter } from "lucide-react";
+import { useRouter } from "next/router";
+import Head from "next/head";
+import { useTheme } from "../src/contexts/ThemeContext";
+import Navigation from "../src/components/Navigation";
+import Footer from "../src/components/Footer";
+
+export default function ResourcesPage() {
+  const router = useRouter();
+  const { isDark, toggleTheme } = useTheme();
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Subscribing email:", email);
+  };
+
+  return (
+    <>
+      <Head>
+        <title>Resources - Saby Analytics Learning Center</title>
+        <meta
+          name="description"
+          content="Learn analytics best practices, data visualization tips, and business growth strategies"
+        />
+        <meta property="og:title" content="Saby Resources & Learning Center" />
+      </Head>
+
+      <div
+        className={`min-h-screen ${
+          isDark ? "bg-gray-900" : "bg-white"
+        } transition-colors duration-300 relative overflow-hidden`}>
+        {/* Patterned Background */}
+        <div className="absolute inset-0 opacity-5">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 0C6.716 0 0 6.716 0 15c0 8.284 6.716 15 15 15 8.284 0 15-6.716 15-15C30 6.716 23.284 0 15 0zm0 28C7.82 28 2 22.18 2 15S7.82 2 15 2s13 5.82 13 13-5.82 13-13 13z' fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+              backgroundSize: "30px 30px",
+            }}
+          />
+        </div>
+
+        <Navigation
+          isDark={isDark}
+          toggleTheme={toggleTheme}
+          currentPage="/resources"
+        />
+
+        {/* Main Content */}
+        <div className="pt-16 relative z-10">
+          {/* Hero Section */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+            <h1
+              className={`text-6xl md:text-7xl font-bold leading-tight mb-8 ${
+                isDark ? "text-white" : "text-gray-900"
+              }`}>
+              Start here.
+            </h1>
+            <p
+              className={`text-xl ${
+                isDark ? "text-gray-400" : "text-gray-600"
+              } max-w-3xl mx-auto mb-16`}>
+              A library of resources to help you analyze data, build insights,
+              and grow your business with data-driven decisions.
+            </p>
+
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto mb-24">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search all Saby resources..."
+                  className={`w-full pl-12 pr-4 py-4 rounded-xl border ${
+                    isDark
+                      ? "bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                      : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg backdrop-blur-sm`}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Part 1 - Building */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+              <div className="relative">
+                <div className="bg-gradient-to-br from-gray-300 to-gray-400 rounded-2xl p-8 shadow-2xl backdrop-blur-sm">
+                  <div className="text-sm font-medium text-gray-600 mb-4">
+                    BUILD YOUR ANALYTICS
+                  </div>
+                  <h3 className="text-4xl font-bold text-purple-600 mb-8">
+                    Setting up
+                    <br />
+                    your dashboard.
+                  </h3>
+                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                    <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-gray-800 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                          <span className="text-white font-bold text-xl">
+                            📊
+                          </span>
+                        </div>
+                        <div className="text-2xl font-bold text-gray-800">
+                          Analytics.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2
+                  className={`text-4xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } mb-6`}>
+                  Part 1 — Building
+                </h2>
+                <p
+                  className={`text-lg ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  } mb-8`}>
+                  Not sure where to begin? Dive into our tutorials and guides
+                  for people who are new to Saby and setting up their first
+                  analytics dashboard.
+                </p>
+
+                <div className="space-y-4">
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      How to setup your Saby dashboard
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        2 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      How to connect your first data source
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        4 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      Building your first analytics report
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        2 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      Setting up automated alerts
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        2 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span className="text-green-600">
+                      How to create custom visualizations
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        2 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <button className="text-green-600 hover:text-green-500 font-medium transition-colors flex items-center mt-6">
+                    Explore the full series{" "}
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Part 2 - Analyzing */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+              <div className="relative">
+                <div className="bg-gradient-to-br from-blue-400 via-purple-500 to-purple-600 rounded-2xl p-8 shadow-2xl text-white backdrop-blur-sm">
+                  <div className="text-sm font-medium text-blue-100 mb-4">
+                    ANALYZE YOUR DATA
+                  </div>
+                  <h3 className="text-4xl font-bold mb-8">
+                    Creating
+                    <br />
+                    insights that
+                    <br />
+                    matter.
+                  </h3>
+                  <div className="relative">
+                    <div className="w-32 h-32 border-4 border-white/30 rounded-full mx-auto flex items-center justify-center">
+                      <div className="w-24 h-24 border-4 border-white/50 rounded-full flex items-center justify-center">
+                        <div className="w-16 h-16 border-4 border-white rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2
+                  className={`text-4xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } mb-6`}>
+                  Part 2 — Analyzing
+                </h2>
+                <p
+                  className={`text-lg ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  } mb-8`}>
+                  Learn the techniques required to analyze data consistently and
+                  extract meaningful insights from your business metrics and
+                  KPIs.
+                </p>
+
+                <div className="space-y-4">
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      The unexpected (but proven) way to find data patterns
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        9 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      6 types of analytics reports you can create today
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        5 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      A comprehensive guide to data visualization best practices
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        8 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      5 ways to automate your analytics workflow
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        7 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Part 4 - Business */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+              <div className="relative">
+                <div className="bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 rounded-2xl p-8 shadow-2xl text-white backdrop-blur-sm">
+                  <div className="text-sm font-medium text-orange-100 mb-4">
+                    GROW YOUR BUSINESS
+                  </div>
+                  <h3 className="text-4xl font-bold mb-8">
+                    Making
+                    <br />
+                    data-driven
+                    <br />
+                    decisions.
+                  </h3>
+                  <div className="relative">
+                    <div className="w-32 h-32 border-4 border-white/30 rounded-full mx-auto flex items-center justify-center">
+                      <div className="w-24 h-24 border-4 border-white/50 rounded-full flex items-center justify-center">
+                        <div className="w-16 h-16 border-4 border-white rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2
+                  className={`text-4xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } mb-6`}>
+                  Part 4 — Business
+                </h2>
+                <p
+                  className={`text-lg ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  } mb-8`}>
+                  Get actionable ideas for your business growth and learn how to
+                  make strategic decisions based on your analytics insights.
+                </p>
+
+                <div className="space-y-4">
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      Business metrics that matter: KPIs explained
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        10 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      4 questions to ask before making data-driven decisions
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        10 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      How to increase ROI with better analytics
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        8 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      Scaling strategy: Turn insights into growth
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        9 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-50"
+                    } transition-colors cursor-pointer backdrop-blur-sm`}>
+                    <span
+                      className={`${isDark ? "text-white" : "text-gray-900"}`}>
+                      How to build a data-driven culture
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}>
+                        7 min read
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <button className="text-orange-500 hover:text-orange-400 font-medium transition-colors flex items-center mt-6">
+                    Explore the full series{" "}
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Newsletter Signup Section */}
+          <div
+            className={`py-24 ${
+              isDark ? "bg-gray-100" : "bg-gray-50"
+            } backdrop-blur-sm`}>
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                Get trends & tips delivered to you.
+              </h2>
+              <p className="text-lg text-gray-600 mb-12">
+                A weekly roundup of emerging trends, products and ideas in
+                <br />
+                the analytics space, trusted by <strong>50,000+</strong>{" "}
+                readers.
+              </p>
+
+              <form
+                onSubmit={handleSubscribe}
+                className="max-w-md mx-auto mb-4">
+                <div className="flex">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your email address"
+                    className="flex-1 px-4 py-3 rounded-l-lg border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="bg-black text-white px-6 py-3 rounded-r-lg hover:bg-gray-800 transition-colors font-medium">
+                    SUBSCRIBE
+                  </button>
+                </div>
+              </form>
+              <p className="text-sm text-gray-500">
+                No spam. No jibberjabber. Unsubscribe any time.
+              </p>
+            </div>
+          </div>
+
+          {/* Testimonials Section */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-white rounded-xl p-6 shadow-lg backdrop-blur-sm">
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
+                  <div>
+                    <div className="font-semibold text-gray-900">
+                      CJ Chilvers
+                    </div>
+                    <div className="text-sm text-gray-500">@cjchilvers</div>
+                  </div>
+                  <Twitter className="w-5 h-5 text-blue-400 ml-auto" />
+                </div>
+                <p className="text-gray-700 mb-4">
+                  Wow, @Saby is killing it today with their analytics platform.
+                  It may just be me, but it seems like more time and care is
+                  being spent every week on it. If you can show me insights
+                  about my business I didn't know about yet — that's something.
+                </p>
+                <div className="text-sm text-gray-500">
+                  2:22 PM · 13 Jun 2021
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-lg backdrop-blur-sm">
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
+                  <div>
+                    <div className="font-semibold text-gray-900">
+                      Arsala Khan
+                    </div>
+                    <div className="text-sm text-gray-500">@arsalagrey</div>
+                  </div>
+                  <Twitter className="w-5 h-5 text-blue-400 ml-auto" />
+                </div>
+                <p className="text-gray-700 mb-4">
+                  @Saby has been my favorite analytics platform of 2022
+                </p>
+                <div className="text-sm text-gray-500">
+                  6:21 PM · 4 Apr 2022
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-lg backdrop-blur-sm">
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
+                  <div>
+                    <div className="font-semibold text-gray-900">
+                      Lajos Nagy
+                    </div>
+                    <div className="text-sm text-gray-500">@LajosNagyUK</div>
+                  </div>
+                  <Twitter className="w-5 h-5 text-blue-400 ml-auto" />
+                </div>
+                <p className="text-gray-700 mb-4">
+                  Ok, the Saby platform is hands down the best analytics tool in
+                  my toolkit and it is not even close. There's not a single
+                  other one that I am going back to use or look forward to
+                  getting insights from. Excellent job!
+                </p>
+                <div className="text-sm text-gray-500">
+                  6:09 PM · 17 Apr 2022
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <footer className="bg-gray-900 text-white py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center">
+                <div className="flex space-x-8">
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors">
+                    Product Updates
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors">
+                    Help Center
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors">
+                    @Saby
+                  </a>
+                </div>
+                <div className="text-gray-400">
+                  Published with{" "}
+                  <a href="#" className="text-white hover:underline">
+                    Saby
+                  </a>
+                </div>
+              </div>
+            </div>
+          </footer>
+        </div>
+
+        <Footer isDark={isDark} />
+      </div>
+    </>
+  );
+}
