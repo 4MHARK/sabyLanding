@@ -7,7 +7,6 @@ import {
   Users,
   DollarSign,
 } from "lucide-react";
-import GradientOrbsBackground from "./GradientOrbsBackground";
 import TypingAnimation from "./TypingAnimation";
 
 interface HeroSectionProps {
@@ -24,18 +23,21 @@ export default function HeroSection({ isDark }: HeroSectionProps) {
   return (
     <div
       className={`relative min-h-screen flex items-center justify-center overflow-hidden ${
-        isDark ? "bg-gray-900" : "bg-white"
+        isDark ? "bg-gray-950" : "bg-white"
       }`}>
-      {/* Floating Gradient Orbs Background - Option 3 */}
-      <GradientOrbsBackground isDark={isDark} />
-
-      {/* Gradient Overlay - Reduced opacity to show network animation */}
+      {/* Grid background overlay */}
       <div
-        className={`absolute inset-0 pointer-events-none ${
-          isDark
-            ? "bg-gradient-to-br from-gray-900/40 via-gray-900/30 to-blue-900/10"
-            : "bg-gradient-to-br from-white/40 via-white/30 to-blue-50/10"
-        }`}
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          opacity: 0.85,
+          backgroundImage: `linear-gradient(90deg, ${
+            isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"
+          } 1px, transparent 1px), linear-gradient(180deg, ${
+            isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"
+          } 1px, transparent 1px)`,
+          backgroundSize: "28px 28px",
+          backgroundPosition: "center",
+        }}
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
