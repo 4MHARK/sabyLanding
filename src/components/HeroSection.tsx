@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ReactTyped } from "react-typed";
 import {
   ArrowRight,
   Play,
@@ -7,7 +8,37 @@ import {
   Users,
   DollarSign,
 } from "lucide-react";
-import TypingAnimation from "./TypingAnimation";
+
+const HEADLINE_PRIMARY_WORDS = [
+  "data",
+  "payments",
+  "systems",
+  "operations",
+  "intelligence",
+  "insights",
+  "networks",
+  "workflow",
+  "Africa",
+  "enterprise",
+];
+
+const HEADLINE_SECONDARY_WORDS = [
+  "decisions",
+  "performance",
+  "strategy",
+  "advantage",
+  "impact",
+  "action",
+  "intelligence",
+  "innovation",
+  "opportunity",
+  "evolution",
+];
+
+const TYPE_SPEED = 65;
+const BETWEEN_WORD_DELAY = 350;
+const HOLD_DURATION = 1200;
+const FADE_DELAY = 400;
 
 interface HeroSectionProps {
   isDark: boolean;
@@ -15,10 +46,48 @@ interface HeroSectionProps {
 
 export default function HeroSection({ isDark }: HeroSectionProps) {
   const [mounted, setMounted] = useState(false);
+  const [primaryIndex, setPrimaryIndex] = useState(0);
+  const [secondaryIndex, setSecondaryIndex] = useState(0);
+  const [primaryVisible, setPrimaryVisible] = useState(true);
+  const [secondaryVisible, setSecondaryVisible] = useState(false);
+  const [primaryDone, setPrimaryDone] = useState(false);
+  const [secondaryDone, setSecondaryDone] = useState(false);
+  const [cycleKey, setCycleKey] = useState(0);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    setPrimaryVisible(true);
+    setSecondaryVisible(false);
+    setPrimaryDone(false);
+    setSecondaryDone(false);
+  }, [cycleKey, mounted]);
+
+  useEffect(() => {
+    if (!mounted || !secondaryDone) return;
+
+    const holdTimer = setTimeout(() => {
+      setPrimaryVisible(false);
+      setSecondaryVisible(false);
+    }, HOLD_DURATION);
+
+    const resetTimer = setTimeout(() => {
+      setPrimaryIndex((prev) => (prev + 1) % HEADLINE_PRIMARY_WORDS.length);
+      setSecondaryIndex((prev) => (prev + 1) % HEADLINE_SECONDARY_WORDS.length);
+      setCycleKey((prev) => prev + 1);
+    }, HOLD_DURATION + FADE_DELAY);
+
+    return () => {
+      clearTimeout(holdTimer);
+      clearTimeout(resetTimer);
+    };
+  }, [secondaryDone, mounted]);
+
+  const primaryWord = HEADLINE_PRIMARY_WORDS[primaryIndex];
+  const secondaryWord = HEADLINE_SECONDARY_WORDS[secondaryIndex];
 
   return (
     <div
@@ -53,44 +122,46 @@ export default function HeroSection({ isDark }: HeroSectionProps) {
             isDark ? "text-white" : "text-gray-900"
           }`}>
           Turn your{" "}
-          <span className="text-blue-600">
-            <TypingAnimation
-              sentences={[
-                "data",
-                "payments",
-                "systems",
-                "operations",
-                "intelligence",
-                "insights",
-                "networks",
-                "workflow",
-                "Africa",
-                "enterprise",
-              ]}
-              fadeSpeed={1000}
-              pauseTime={4000}
-              className=""
-            />
+          <span
+            className={`text-blue-600 transition-opacity duration-500 ${
+              primaryVisible ? "opacity-100" : "opacity-0"
+            }`}>
+            {mounted ? (
+              <ReactTyped
+                key={`primary-${cycleKey}`}
+                strings={[primaryWord]}
+                typeSpeed={TYPE_SPEED}
+                backSpeed={0}
+                showCursor={false}
+                loop={false}
+                onComplete={() => {
+                  setPrimaryDone(true);
+                  setSecondaryVisible(true);
+                }}
+              />
+            ) : (
+              primaryWord
+            )}
           </span>{" "}
           into{" "}
-          <span className="text-blue-600">
-            <TypingAnimation
-              sentences={[
-                "decisions",
-                "performance",
-                "strategy",
-                "advantage",
-                "impact",
-                "action",
-                "intelligence",
-                "innovation",
-                "opportunity",
-                "evolution",
-              ]}
-              fadeSpeed={1000}
-              pauseTime={4000}
-              className=""
-            />
+          <span
+            className={`text-blue-600 transition-opacity duration-500 ${
+              secondaryVisible ? "opacity-100" : "opacity-0"
+            }`}>
+            {mounted && primaryDone ? (
+              <ReactTyped
+                key={`secondary-${cycleKey}`}
+                strings={[secondaryWord]}
+                typeSpeed={TYPE_SPEED}
+                backSpeed={0}
+                showCursor={false}
+                loop={false}
+                startDelay={BETWEEN_WORD_DELAY}
+                onComplete={() => setSecondaryDone(true)}
+              />
+            ) : (
+              secondaryWord
+            )}
           </span>
           .
         </h1>

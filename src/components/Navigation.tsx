@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import ProductSubnav from "./ProductSubnav";
 import ResourcesSubnav from "./ResourcesSubnav";
+import { useAuthModal } from "../contexts/AuthModalContext";
 
 interface NavigationProps {
   isDark: boolean;
@@ -32,6 +33,7 @@ export default function Navigation({
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [showProductMenu, setShowProductMenu] = React.useState(false);
   const [showResourcesMenu, setShowResourcesMenu] = React.useState(false);
+  const { openModal } = useAuthModal();
 
   const isActive = (path: string) =>
     currentPage === path || router.pathname === path;
@@ -189,15 +191,15 @@ export default function Navigation({
               aria-label="Toggle theme">
               {isDark ? "☀️" : "🌙"}
             </button>
-            <Link
-              href="/auth/login"
+            <button
+              onClick={() => openModal("login")}
               className={`${
                 isDark
                   ? "text-gray-300 hover:text-white"
                   : "text-gray-600 hover:text-gray-900"
               } transition-colors`}>
               Sign in
-            </Link>
+            </button>
             <Link
               href="/auth/signup"
               className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-all">
@@ -453,15 +455,15 @@ export default function Navigation({
                 )}
               </div>
               <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                <Link
-                  href="/auth/login"
-                  className={`block mb-2 ${
+                <button
+                  onClick={() => openModal("login")}
+                  className={`block mb-2 w-full text-left ${
                     isDark
                       ? "text-gray-300 hover:text-white"
                       : "text-gray-600 hover:text-gray-900"
                   } transition-colors`}>
                   Sign in
-                </Link>
+                </button>
                 <Link
                   href="/auth/signup"
                   className="w-full bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors block text-center">

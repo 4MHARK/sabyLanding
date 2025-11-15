@@ -311,7 +311,7 @@ export default function Footer({ isDark }: FooterProps) {
                   className="hover:text-white transition-colors">
                   Contact
                 </Link>
-                <span>Saby Analytics © 2025</span>
+                <span>Saby Technologies @ 2025</span>
               </div>
             </div>
           </div>
