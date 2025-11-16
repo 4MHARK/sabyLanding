@@ -201,7 +201,7 @@ export default function Navigation({
               Sign in
             </button>
             <Link
-              href="/auth/signup"
+              href="/subscribe"
               className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-all">
               Start Free Trial
             </Link>
@@ -465,7 +465,7 @@ export default function Navigation({
                   Sign in
                 </button>
                 <Link
-                  href="/auth/signup"
+                  href="/subscribe"
                   className="w-full bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors block text-center">
                   Get Started — free
                 </Link>

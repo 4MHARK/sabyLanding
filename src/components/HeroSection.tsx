@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { ReactTyped } from "react-typed";
 import {
   ArrowRight,
@@ -179,10 +180,12 @@ export default function HeroSection({ isDark }: HeroSectionProps) {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-          <button className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-lg font-semibold flex items-center gap-2 transition-colors">
+          <Link
+            href="/subscribe"
+            className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-lg font-semibold flex items-center gap-2 transition-colors">
             Start Free Trial
             <ArrowRight className="w-5 h-5" />
-          </button>
+          </Link>
           <button
             className={`flex items-center gap-2 px-8 py-4 rounded-lg font-semibold transition-colors ${
               isDark

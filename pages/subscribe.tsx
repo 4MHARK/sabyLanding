@@ -109,7 +109,7 @@ const SubscribePage = () => {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      router.push("/?subscription=success");
+      router.push("/subscribe/success");
     }, 1500);
   };
 
@@ -122,8 +122,9 @@ const SubscribePage = () => {
         className={`min-h-screen relative overflow-hidden transition-colors ${
           isDark ? "bg-gray-950" : "bg-white"
         }`}>
+        {/* Background grid - behind everything */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="fixed inset-0 pointer-events-none z-0"
           style={{
             opacity: 0.85,
             backgroundImage: `linear-gradient(90deg, ${
@@ -135,14 +136,16 @@ const SubscribePage = () => {
             backgroundPosition: "center",
           }}
         />
+        {/* Navigation - z-50 */}
         <Navigation
           isDark={isDark}
           toggleTheme={toggleTheme}
           currentPage="/subscribe"
         />
-        <main className="pt-24 pb-16">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <header className="mb-12 space-y-4 text-center">
+        {/* Main content - z-10 above background */}
+        <main className="relative z-10 pt-24 pb-16">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <header className="mb-12 space-y-4 text-center relative">
               <p className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-blue-500/10 text-blue-500 text-sm font-medium">
                 <Shield className="w-4 h-4" />
                 30-day free trial • no charge today
@@ -159,7 +162,7 @@ const SubscribePage = () => {
               </p>
             </header>
 
-            <ol className="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-10">
+            <ol className="relative z-10 flex flex-col sm:flex-row gap-4 sm:gap-8 mb-10">
               {progressSteps.map((item, index) => {
                 const active = index === step;
                 const complete = index < step;
@@ -194,7 +197,7 @@ const SubscribePage = () => {
 
             <div className="grid lg:grid-cols-[2fr,1fr] gap-8">
               <section
-                className={`rounded-3xl border p-6 ${
+                className={`relative z-20 rounded-3xl border p-6 ${
                   isDark
                     ? "border-gray-800 bg-gray-900/60"
                     : "border-white bg-white shadow-lg"
@@ -604,7 +607,7 @@ const SubscribePage = () => {
               </section>
 
               <aside
-                className={`rounded-3xl border p-6 space-y-6 ${
+                className={`relative z-20 rounded-3xl border p-6 space-y-6 ${
                   isDark
                     ? "border-gray-800 bg-gray-900/40"
                     : "border-white bg-white shadow-xl"
@@ -655,7 +658,9 @@ const SubscribePage = () => {
             </div>
           </div>
         </main>
-        <Footer isDark={isDark} />
+        <div className="relative z-10">
+          <Footer isDark={isDark} />
+        </div>
       </div>
     </>
   );
