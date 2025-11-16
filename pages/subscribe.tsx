@@ -1,0 +1,664 @@
+import React, { useEffect, useMemo, useState } from "react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { Check, Shield, ArrowRight, CreditCard } from "lucide-react";
+import Navigation from "../src/components/Navigation";
+import Footer from "../src/components/Footer";
+import { useTheme } from "../src/contexts/ThemeContext";
+import { plans, Plan } from "../src/data/plans";
+
+type Step = 0 | 1 | 2 | 3;
+type BillingCycle = "monthly" | "annual";
+
+interface WorkspaceDetails {
+  workspaceName: string;
+  seatCount: number;
+  billingEmail: string;
+  reminder: boolean;
+}
+
+interface BillingDetails {
+  cardNumber: string;
+  expiry: string;
+  cvc: string;
+  country: string;
+  address: string;
+  saveCard: boolean;
+}
+
+const initialWorkspace: WorkspaceDetails = {
+  workspaceName: "",
+  seatCount: 5,
+  billingEmail: "",
+  reminder: true,
+};
+
+const initialBilling: BillingDetails = {
+  cardNumber: "",
+  expiry: "",
+  cvc: "",
+  country: "",
+  address: "",
+  saveCard: true,
+};
+
+const progressSteps = [
+  { label: "Choose plan" },
+  { label: "Workspace details" },
+  { label: "Payment" },
+  { label: "Review" },
+];
+
+const SubscribePage = () => {
+  const router = useRouter();
+  const { plan: planQuery, cycle: cycleQuery } = router.query;
+  const { isDark, toggleTheme } = useTheme();
+  const [step, setStep] = useState<Step>(0);
+  const [selectedPlanId, setSelectedPlanId] = useState<string>(
+    typeof planQuery === "string" ? planQuery : "pro"
+  );
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>("monthly");
+  const [workspace, setWorkspace] = useState(initialWorkspace);
+  const [billing, setBilling] = useState(initialBilling);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const selectedPlan: Plan = useMemo(() => {
+    return plans.find((plan) => plan.id === selectedPlanId) || plans[1];
+  }, [selectedPlanId]);
+
+  const selectedPrice = selectedPlan.billing.find((b) => b.id === billingCycle);
+
+  const trialEnd = useMemo(() => {
+    const now = new Date();
+    now.setMonth(now.getMonth() + 1);
+    return now.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  }, []);
+
+  useEffect(() => {
+    if (typeof planQuery === "string") {
+      const normalizedPlan = planQuery.toLowerCase();
+      if (plans.some((plan) => plan.id === normalizedPlan)) {
+        setSelectedPlanId(normalizedPlan);
+      }
+    }
+    if (typeof cycleQuery === "string") {
+      const normalizedCycle = cycleQuery.toLowerCase();
+      if (normalizedCycle === "monthly" || normalizedCycle === "annual") {
+        setBillingCycle(normalizedCycle);
+      }
+    }
+  }, [planQuery, cycleQuery]);
+
+  const handleNext = () => {
+    if (step < 3) {
+      setStep((prev) => (prev + 1) as Step);
+    }
+  };
+
+  const handleBack = () => {
+    if (step > 0) {
+      setStep((prev) => (prev - 1) as Step);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      router.push("/?subscription=success");
+    }, 1500);
+  };
+
+  return (
+    <>
+      <Head>
+        <title>Checkout – Saby</title>
+      </Head>
+      <div
+        className={`min-h-screen relative overflow-hidden transition-colors ${
+          isDark ? "bg-gray-950" : "bg-white"
+        }`}>
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            opacity: 0.85,
+            backgroundImage: `linear-gradient(90deg, ${
+              isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"
+            } 1px, transparent 1px), linear-gradient(180deg, ${
+              isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"
+            } 1px, transparent 1px)`,
+            backgroundSize: "28px 28px",
+            backgroundPosition: "center",
+          }}
+        />
+        <Navigation
+          isDark={isDark}
+          toggleTheme={toggleTheme}
+          currentPage="/subscribe"
+        />
+        <main className="pt-24 pb-16">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <header className="mb-12 space-y-4 text-center">
+              <p className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-blue-500/10 text-blue-500 text-sm font-medium">
+                <Shield className="w-4 h-4" />
+                30-day free trial • no charge today
+              </p>
+              <h1
+                className={`text-4xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                }`}>
+                Let’s get your workspace live
+              </h1>
+              <p className={isDark ? "text-gray-300" : "text-gray-600"}>
+                Pick a plan, enter workspace details, add a payment method, and
+                start shipping in minutes.
+              </p>
+            </header>
+
+            <ol className="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-10">
+              {progressSteps.map((item, index) => {
+                const active = index === step;
+                const complete = index < step;
+                return (
+                  <li
+                    key={item.label}
+                    className="flex-1 flex items-center gap-3 text-sm">
+                    <span
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border ${
+                        complete
+                          ? "bg-blue-600 border-blue-600 text-white"
+                          : active
+                          ? "border-blue-600 text-blue-600"
+                          : "border-gray-300 text-gray-400"
+                      }`}>
+                      {complete ? <Check className="w-4 h-4" /> : index + 1}
+                    </span>
+                    <span
+                      className={`font-medium ${
+                        active
+                          ? "text-blue-600"
+                          : isDark
+                          ? "text-gray-400"
+                          : "text-gray-500"
+                      }`}>
+                      {item.label}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+
+            <div className="grid lg:grid-cols-[2fr,1fr] gap-8">
+              <section
+                className={`rounded-3xl border p-6 ${
+                  isDark
+                    ? "border-gray-800 bg-gray-900/60"
+                    : "border-white bg-white shadow-lg"
+                }`}>
+                {step === 0 && (
+                  <div className="space-y-8">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs uppercase tracking-wide ${
+                          isDark
+                            ? "bg-blue-500/10 text-blue-300"
+                            : "bg-blue-50 text-blue-700"
+                        }`}>
+                        Step 1
+                      </span>
+                      <h2
+                        className={`text-2xl font-semibold ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}>
+                        Choose the plan that fits your team
+                      </h2>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      {plans.map((plan) => (
+                        <button
+                          key={plan.id}
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setSelectedPlanId(plan.id);
+                          }}
+                          className={`text-left rounded-2xl border p-4 space-y-2 transition-all cursor-pointer ${
+                            selectedPlanId === plan.id
+                              ? "border-blue-600 bg-blue-600/10 shadow-lg shadow-blue-500/20 ring-2 ring-blue-500/20"
+                              : isDark
+                              ? "border-gray-800 bg-gray-900/40 hover:border-gray-700 hover:bg-gray-900/60"
+                              : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
+                          }`}>
+                          <div className="flex items-center justify-between">
+                            <h3
+                              className={`text-lg font-semibold ${
+                                isDark ? "text-white" : "text-gray-900"
+                              }`}>
+                              {plan.name}
+                            </h3>
+                            {plan.badge && (
+                              <span className="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-600">
+                                {plan.badge}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {plan.description}
+                          </p>
+                          <p className="text-2xl font-semibold">
+                            $
+                            {
+                              plan.billing.find(
+                                (billing) => billing.id === billingCycle
+                              )?.price
+                            }
+                            <span className="text-base font-normal text-gray-500 dark:text-gray-400">
+                              /seat
+                            </span>
+                          </p>
+                          <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                            {plan.features.slice(0, 2).map((feature) => (
+                              <li
+                                key={feature}
+                                className="flex items-center gap-2">
+                                <Check className="w-4 h-4 text-emerald-500" />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-3 items-center">
+                      {selectedPlan.billing.map((cycle) => (
+                        <button
+                          key={cycle.id}
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setBillingCycle(cycle.id);
+                          }}
+                          className={`px-4 py-2 rounded-full border text-sm cursor-pointer transition-all ${
+                            billingCycle === cycle.id
+                              ? "border-blue-600 bg-blue-600/10 text-blue-600 font-medium"
+                              : isDark
+                              ? "border-gray-700 text-gray-400 hover:border-gray-600 hover:text-gray-300"
+                              : "border-gray-300 text-gray-500 hover:border-gray-400 hover:text-gray-700"
+                          }`}>
+                          {cycle.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {step === 1 && (
+                  <form
+                    onSubmit={(e) => e.preventDefault()}
+                    className="space-y-6">
+                    <div>
+                      <label
+                        htmlFor="workspace-name"
+                        className={`block text-sm font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        }`}>
+                        Workspace name
+                      </label>
+                      <input
+                        id="workspace-name"
+                        type="text"
+                        value={workspace.workspaceName}
+                        onChange={(e) =>
+                          setWorkspace((prev) => ({
+                            ...prev,
+                            workspaceName: e.target.value,
+                          }))
+                        }
+                        className={`mt-2 w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition ${
+                          isDark
+                            ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-500/40"
+                            : "bg-white border-gray-200 text-gray-900 focus:ring-blue-500/20"
+                        }`}
+                        placeholder="acme-systems"
+                      />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label
+                          htmlFor="seat-count"
+                          className={`block text-sm font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          }`}>
+                          Seat count
+                        </label>
+                        <input
+                          id="seat-count"
+                          type="number"
+                          min={1}
+                          max={5000}
+                          value={workspace.seatCount}
+                          onChange={(e) =>
+                            setWorkspace((prev) => ({
+                              ...prev,
+                              seatCount: Number(e.target.value),
+                            }))
+                          }
+                          className={`mt-2 w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition ${
+                            isDark
+                              ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-500/40"
+                              : "bg-white border-gray-200 text-gray-900 focus:ring-blue-500/20"
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="billing-email"
+                          className={`block text-sm font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          }`}>
+                          Billing email
+                        </label>
+                        <input
+                          id="billing-email"
+                          type="email"
+                          value={workspace.billingEmail}
+                          onChange={(e) =>
+                            setWorkspace((prev) => ({
+                              ...prev,
+                              billingEmail: e.target.value,
+                            }))
+                          }
+                          className={`mt-2 w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition ${
+                            isDark
+                              ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-500/40"
+                              : "bg-white border-gray-200 text-gray-900 focus:ring-blue-500/20"
+                          }`}
+                          placeholder="finance@acme.com"
+                        />
+                      </div>
+                    </div>
+                    <label className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                      <input
+                        type="checkbox"
+                        checked={workspace.reminder}
+                        onChange={(e) =>
+                          setWorkspace((prev) => ({
+                            ...prev,
+                            reminder: e.target.checked,
+                          }))
+                        }
+                        className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      />
+                      Email me 7 days before trial ends
+                    </label>
+                  </form>
+                )}
+
+                {step === 2 && (
+                  <form
+                    onSubmit={(e) => e.preventDefault()}
+                    className="space-y-6">
+                    <div>
+                      <label
+                        htmlFor="card-number"
+                        className={`block text-sm font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        }`}>
+                        Card number
+                      </label>
+                      <div className="relative mt-2">
+                        <input
+                          id="card-number"
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="4242 4242 4242 4242"
+                          value={billing.cardNumber}
+                          onChange={(e) =>
+                            setBilling((prev) => ({
+                              ...prev,
+                              cardNumber: e.target.value,
+                            }))
+                          }
+                          className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition ${
+                            isDark
+                              ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-500/40"
+                              : "bg-white border-gray-200 text-gray-900 focus:ring-blue-500/20"
+                          }`}
+                        />
+                        <CreditCard className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        placeholder="MM/YY"
+                        value={billing.expiry}
+                        onChange={(e) =>
+                          setBilling((prev) => ({
+                            ...prev,
+                            expiry: e.target.value,
+                          }))
+                        }
+                        className={`px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition ${
+                          isDark
+                            ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-500/40"
+                            : "bg-white border-gray-200 text-gray-900 focus:ring-blue-500/20"
+                        }`}
+                      />
+                      <input
+                        type="text"
+                        placeholder="CVC"
+                        value={billing.cvc}
+                        onChange={(e) =>
+                          setBilling((prev) => ({
+                            ...prev,
+                            cvc: e.target.value,
+                          }))
+                        }
+                        className={`px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition ${
+                          isDark
+                            ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-500/40"
+                            : "bg-white border-gray-200 text-gray-900 focus:ring-blue-500/20"
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        className={`block text-sm font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        }`}>
+                        Billing address
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Street address"
+                        value={billing.address}
+                        onChange={(e) =>
+                          setBilling((prev) => ({
+                            ...prev,
+                            address: e.target.value,
+                          }))
+                        }
+                        className={`mt-2 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition ${
+                          isDark
+                            ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-500/40"
+                            : "bg-white border-gray-200 text-gray-900 focus:ring-blue-500/20"
+                        }`}
+                      />
+                    </div>
+                    <label className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                      <input
+                        type="checkbox"
+                        checked={billing.saveCard}
+                        onChange={(e) =>
+                          setBilling((prev) => ({
+                            ...prev,
+                            saveCard: e.target.checked,
+                          }))
+                        }
+                        className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      />
+                      Save card for future invoices
+                    </label>
+                  </form>
+                )}
+
+                {step === 3 && (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                      <h3
+                        className={`text-xl font-semibold ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}>
+                        Review & confirm
+                      </h3>
+                      <p className={isDark ? "text-gray-400" : "text-gray-500"}>
+                        Your trial is live until {trialEnd}. We’ll send a
+                        reminder 7 days before billing starts.
+                      </p>
+                    </div>
+                    <dl className="space-y-4">
+                      <div className="flex items-center justify-between text-sm">
+                        <dt className="text-gray-500 dark:text-gray-400">
+                          Plan
+                        </dt>
+                        <dd className="font-medium">
+                          {selectedPlan.name} · {selectedPrice?.label}
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <dt className="text-gray-500 dark:text-gray-400">
+                          Seats
+                        </dt>
+                        <dd className="font-medium">{workspace.seatCount}</dd>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <dt className="text-gray-500 dark:text-gray-400">
+                          Due today
+                        </dt>
+                        <dd className="font-medium text-emerald-500">Free</dd>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <dt className="text-gray-500 dark:text-gray-400">
+                          Renews on {trialEnd}
+                        </dt>
+                        <dd className="font-medium">
+                          ${(selectedPrice?.price || 0) * workspace.seatCount}
+                          /mo
+                        </dd>
+                      </div>
+                    </dl>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:opacity-95 transition disabled:opacity-60">
+                      {isSubmitting ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <>
+                          Start free trial
+                          <ArrowRight className="w-5 h-5" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
+
+                <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-wrap gap-3 justify-between items-center">
+                  <div>
+                    {step > 0 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleBack();
+                        }}
+                        className="text-sm cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                        ← Back
+                      </button>
+                    )}
+                  </div>
+                  <div>
+                    {step < 3 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleNext();
+                        }}
+                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium cursor-pointer bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm hover:shadow">
+                        Continue
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              <aside
+                className={`rounded-3xl border p-6 space-y-6 ${
+                  isDark
+                    ? "border-gray-800 bg-gray-900/40"
+                    : "border-white bg-white shadow-xl"
+                }`}>
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Summary</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Make changes anytime before confirming.
+                  </p>
+                </div>
+                <div className="border border-dashed rounded-2xl p-4 space-y-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span>Plan</span>
+                    <span className="font-medium">{selectedPlan.name}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Billing</span>
+                    <span className="font-medium capitalize">
+                      {billingCycle}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Seats</span>
+                    <span className="font-medium">{workspace.seatCount}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Next invoice</span>
+                    <span className="font-semibold">
+                      ${(selectedPrice?.price || 0) * workspace.seatCount}
+                      /mo
+                    </span>
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 text-sm text-emerald-700 dark:text-emerald-300">
+                  ✅ $0 due today. Your trial ends {trialEnd}. Cancel anytime.
+                </div>
+                <ul className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-500" />
+                    PCI DSS Level 1 compliant billing
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-500" />
+                    SLA-backed uptime on paid plans
+                  </li>
+                </ul>
+              </aside>
+            </div>
+          </div>
+        </main>
+        <Footer isDark={isDark} />
+      </div>
+    </>
+  );
+};
+
+export default SubscribePage;

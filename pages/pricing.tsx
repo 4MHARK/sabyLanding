@@ -353,6 +353,13 @@ export default function PricingPage() {
                   </div>
 
                   <button
+                    onClick={() =>
+                      plan.isCustom
+                        ? router.push("/contact")
+                        : router.push(
+                            `/subscribe?plan=${plan.name.toLowerCase()}`
+                          )
+                    }
                     className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
                       index === 1
                         ? "bg-gray-900 text-white hover:bg-gray-800"

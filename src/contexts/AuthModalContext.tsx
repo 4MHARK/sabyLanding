@@ -6,7 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 
-type AuthModalView = "login" | "forgot" | "otp";
+type AuthModalView = "login" | "forgot" | "otp" | "signup";
 
 interface AuthModalContextValue {
   isOpen: boolean;

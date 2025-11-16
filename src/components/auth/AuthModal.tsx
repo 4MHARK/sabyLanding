@@ -67,7 +67,8 @@ const LoginView: React.FC<{
   isDark: boolean;
   onForgot: () => void;
   onSuccess: () => void;
-}> = ({ isDark, onForgot, onSuccess }) => {
+  onSignup: () => void;
+}> = ({ isDark, onForgot, onSuccess, onSignup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -246,6 +247,119 @@ const ForgotPasswordView: React.FC<{
         </button>
       </form>
     </>
+  );
+};
+
+const SignupView: React.FC<{
+  isDark: boolean;
+  onSuccess: () => void;
+}> = ({ isDark, onSuccess }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      onSuccess();
+    }, 1500);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-6">
+        <p className={isDark ? "text-gray-300" : "text-gray-600"}>
+          Spin up your workspace in minutes. Configure branding, collaborators,
+          and governance after you land inside the console.
+        </p>
+        <div>
+          <label
+            htmlFor="signup-name"
+            className={`block text-sm font-medium ${
+              isDark ? "text-gray-300" : "text-gray-700"
+            }`}>
+            Full name
+          </label>
+          <input
+            id="signup-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={`mt-2 w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
+              isDark
+                ? "bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-blue-500/40"
+                : "bg-white border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-blue-500/40"
+            }`}
+            placeholder="Ada Lovelace"
+            required
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="signup-email"
+            className={`block text-sm font-medium ${
+              isDark ? "text-gray-300" : "text-gray-700"
+            }`}>
+            Work email
+          </label>
+          <input
+            id="signup-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={`mt-2 w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
+              isDark
+                ? "bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-blue-500/40"
+                : "bg-white border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-blue-500/40"
+            }`}
+            placeholder="you@company.com"
+            required
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="signup-password"
+            className={`block text-sm font-medium ${
+              isDark ? "text-gray-300" : "text-gray-700"
+            }`}>
+            Create password
+          </label>
+          <input
+            id="signup-password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`mt-2 w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
+              isDark
+                ? "bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-blue-500/40"
+                : "bg-white border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-blue-500/40"
+            }`}
+            placeholder="At least 10 characters"
+            minLength={10}
+            required
+          />
+        </div>
+      </div>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:opacity-95 transition disabled:opacity-60">
+        {isSubmitting ? (
+          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <>
+            Create workspace
+            <ArrowRight className="w-5 h-5" />
+          </>
+        )}
+      </button>
+      <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+        By continuing you agree to our Terms of Service and Privacy Policy.
+      </p>
+    </form>
   );
 };
 
@@ -457,6 +571,7 @@ const AuthModal: React.FC = () => {
                 isDark ? "text-white" : "text-gray-900"
               }`}>
               {view === "login" && "Sign in to Saby"}
+              {view === "signup" && "Create your workspace"}
               {view === "forgot" && "Reset your password"}
               {view === "otp" && "Enter verification code"}
             </h3>
@@ -496,16 +611,29 @@ const AuthModal: React.FC = () => {
                 isDark={isDark}
                 onForgot={() => setView("forgot")}
                 onSuccess={() => closeModal()}
+                onSignup={() => setView("signup")}
               />
               <p className="text-sm text-center">
                 <span className={isDark ? "text-gray-400" : "text-gray-500"}>
                   New here?{" "}
                 </span>
-                <button className="text-blue-500 hover:text-blue-400 font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setView("signup")}
+                  className="text-blue-500 hover:text-blue-400 font-semibold">
                   Create an account
                 </button>
               </p>
             </Fragment>
+          )}
+
+          {view === "signup" && (
+            <SignupView
+              isDark={isDark}
+              onSuccess={() => {
+                closeModal();
+              }}
+            />
           )}
 
           {view === "forgot" && (
@@ -522,15 +650,24 @@ const AuthModal: React.FC = () => {
           )}
 
           {view !== "login" && (
-            <button
-              onClick={() => setView("login")}
-              className={`w-full text-sm font-medium ${
-                isDark
-                  ? "text-gray-400 hover:text-gray-200"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}>
-              ← Back to sign in
-            </button>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => setView("login")}
+                className={`w-full text-sm font-medium ${
+                  isDark
+                    ? "text-gray-400 hover:text-gray-200"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}>
+                ← Back to sign in
+              </button>
+              {view === "forgot" && (
+                <button
+                  onClick={() => setView("otp")}
+                  className="w-full text-sm font-medium text-blue-500 hover:text-blue-400">
+                  OTP
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
